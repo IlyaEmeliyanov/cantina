@@ -1,0 +1,7 @@
+{
+    "port": 5000,
+    "DATABASE": "mongodb://localhost/cantina",
+    "NODE_ENV": "development",
+    "privateKey": "cantina1234",
+    "JWT_COOKIE_EXPIRES_IN": 90
+}
