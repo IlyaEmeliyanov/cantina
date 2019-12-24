@@ -46,4 +46,6 @@ app.use('*', (req, res, next) => {
 });
 app.use(globalError);
 
-app.listen(port, () => console.log(info('Connected to port: ', port)));
+const connectionPort = process.env.PORT || port;
+
+app.listen(connectionPort, () => console.log(info('Connected to port: ', connectionPort)));
