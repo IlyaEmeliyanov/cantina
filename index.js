@@ -49,10 +49,7 @@ function config(req, res, next) {
 
 app.use(config);
 
-app.use('/', (req, res) => {
-    res.send("Hello World");
-});
-app.use('/serie', serieRouter);
+app.use('/', serieRouter);
 app.use('/main', authRouter);
 app.use('*', (req, res, next) => {
     next(new AppError(`Invalid path ${req.path}`));
