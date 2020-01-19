@@ -1,8 +1,0 @@
-{
-    "port": 5000,
-    "DATABASE_DEV": "mongodb://localhost:27017/cantina",
-    "DATABASE_PROD": "mongodb+srv://dbUser:<password>@cluster0-kbcga.mongodb.net/test?retryWrites=true&w=majority",
-    "NODE_ENV_DEV": "development",
-    "privateKey": "cantina1234",
-    "JWT_COOKIE_EXPIRES_IN": 90
-}
