@@ -1,0 +1,30 @@
+.form_center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  border: none;
+  width: 100%;
+  font-size: 2.3vh;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+/* #dLabel {
+    width: 240px;
+  height: 40px;
+  border-radius: 4px;
+  background-color: #fff;
+  border: solid 1px #cccccc;
+  text-align: left;
+  padding: 7.5px 15px;
+  color: #ccc;
+  letter-spacing: 0.7px;
+  margin-top: 25px;
+  
+ 
+} */

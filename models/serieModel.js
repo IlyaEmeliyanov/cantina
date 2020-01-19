@@ -1,17 +1,15 @@
 const mongoose = require('mongoose');
 
-const SerieSchema = new mongoose.Schema({
+const serieSchema = new mongoose.Schema({
     wine: {
-        type: String,
-        required: [true, 'The serie must have a wine'],
-        enum: ['vino1', 'vino2', 'vino3'],
-        minlength: 3,
-        maxlength: 15
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Wine',
+        required: [true, 'The serie must have a wine']
     },
     qty: {
         type: Number,
         required: [true, 'The serie must have a quantity'],
-        min: 0,
+        min: 1,
         max: 1000
     },
     date: {
@@ -19,12 +17,12 @@ const SerieSchema = new mongoose.Schema({
         default: Date.now()
     },
     person: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: [true, 'The serie must have a receiver'],
     },
     purpose: {
         type: String,
-        enum: ['Omaggio', 'Ordine'],
         required: [true, 'The serie must have a purpose'],
     },
     comment: {
@@ -33,13 +31,20 @@ const SerieSchema = new mongoose.Schema({
         maxlength: 50,
         required: [true, 'The serie must have a comment'],
     },
-    destination: {
-        type: [Number],
-        index: '2dsphere',
+    destinationStr: {
+        type: String,
         required: [true, 'The serie must have a destination']
     }
 }, { toJSON: {virtuals: true}, toObject: {virtuals: true}});
 
-const Serie = mongoose.model('Serie', SerieSchema);
+serieSchema.pre(/^find/, function(next) {
+    this.populate({
+        path: 'person',
+        select: '-__v -role -password -passwordConfirm -_id'
+    });
+    next();
+});
+
+const Serie = mongoose.model('Serie', serieSchema);
 
 module.exports = Serie;

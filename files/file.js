@@ -1,25 +1,28 @@
 const Serie = require('../models/serieModel');
+const User = require('../models/userModel');
 const fs = require('fs');
 const mongoose = require('mongoose');
 
-const {DATABASE} = require('../config/config.json');
-mongoose.connect(DATABASE).then(() => console.log(info('Connected to DB'))).catch(err => console.log(error('Error: ', err.message)));
+const {DATABASE_DEV} = require('../config/config.json');
+mongoose.connect(DATABASE_DEV).then(() => console.log(info('Connected to DB'))).catch(err => console.log(error('Error: ', err.message)));
 
-const readSeries = () => {
-    const filePath = './series.json';
+const readFiles = (path) => {
+    const filePath = path;
     const files = fs.readFileSync(filePath);
     const jsonFiles = JSON.parse(files);
     return jsonFiles;
 }
 
-const saveSeries = async() => {
-    const files = readSeries();
-    await Serie.insertMany(files);
+const saveFiles = async(files, Model) => {
+    await Model.insertMany(files);
 }
 
-const deleteSeries = async() => {
-    await Serie.deleteMany();
+const deleteFiles = async(Model) => {
+    await Model.deleteMany();
 }
 
-saveSeries();
-// deleteSeries();
+// const series = readFiles('./series.json');
+// const users = readFiles('./users.json');
+// saveFiles(series, Serie);
+// saveFiles(users, User);
+deleteFiles(Serie);

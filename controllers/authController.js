@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
@@ -7,6 +6,7 @@ const catchAsync = require('../utils/catchAsync');
 const {NODE_ENV, privateKey, JWT_COOKIE_EXPIRES_IN} = require('../config/config.json');
 
 const AppError = require('../utils/AppError');
+const bcrypt = require('bcryptjs');
 
 const createJwt = (value) => {
     const token = jwt.sign({value}, privateKey, {
@@ -29,7 +29,8 @@ const createAndSendToken = (user, statusCode, res) => {
     user.passwordConfirm = undefined;
   
     res.cookie('jwt', token, cookieOpt); // inserting the token in the cookies field of the clients computer
-  
+    
+    res.header('x-auth-token', token);
     res.status(statusCode).json({
       status: 'success',
       token,
@@ -40,15 +41,26 @@ const createAndSendToken = (user, statusCode, res) => {
 };
 
 exports.signup = catchAsync(async(req, res, next) => {
-    const {name, email, password, passwordConfirm, role} = req.body;
-    const user = await User.create({
-        name, 
-        email,
-        password,
-        passwordConfirm,
-        role
-    });
-    createAndSendToken(user, 200, res);
+    const {name, email, password, confirmPassword, role} = req.body;
+
+    User.findOne({email}).then(async(user) => {
+        if(user) {
+            console.log(user);
+            return res.status(400).json({msg: 'User already exists'});
+        }
+        const newUser = await User.create({
+            name, 
+            email,
+            password,
+            confirmPassword,
+            role
+        });
+
+        console.log('User was created in the database');
+
+        createAndSendToken(newUser, 200, res);
+    })
+
 });
 
 exports.login = catchAsync(async(req, res, next) => {
@@ -56,11 +68,24 @@ exports.login = catchAsync(async(req, res, next) => {
     
     if(!email || !password) return next(new AppError('You must specify email and password fields', 400));
     
-    const user = await User.findOne({email, password});
+    const user = await User.findOne({email});
+    const compared = await bcrypt.compare(password, user.password);
+    
+    if(compared && user) createAndSendToken(user, 200, res);
+    else return next(new AppError('No user found with that credentials', 401));
+});
 
-    if(!user) return next(new AppError('No user found with that credentials', 401));
-
-    createAndSendToken(user, 200, res);
+exports.getMe = catchAsync(async(req, res, next) => {
+    const user = await User.findById(req.params.id);
+    if(!user) return next(new AppError('No user in the database with that ID', 400));
+    res.json({
+        status: 'succces',
+        data: {
+            _id: user._id,
+            email: user.email,
+            name: user.name
+        }
+    });
 });
 
 exports.deleteMe = catchAsync(async(req, res, next) => {

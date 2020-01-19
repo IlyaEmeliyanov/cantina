@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -20,7 +21,7 @@ const userSchema = new mongoose.Schema({
         maxlength: 20,
         required: [true, 'A user must have a password'],
     },
-    passwordConfirm: {
+    confirmPassword: {
         type: String,
         validate: {
             validator: function(val){
@@ -37,6 +38,14 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'admin'],
         default: 'user'
     }
+}, {toJSON: {virtuals: true}, toObject: {virtuals: true}});
+
+userSchema.pre('save', async function(next) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    this.confirmPassword = undefined;
+
+    next();
 });
 
 const User = mongoose.model('User', userSchema);

@@ -1,0 +1,30 @@
+[
+    {
+        "role": "user",
+        "name": "Claudio",
+        "email": "example1@example.com",
+        "password": "abc123",
+        "passwordConfirm": "abc123"
+    },
+    {
+        "role": "user",
+        "name": "Pier",
+        "email": "example3@example.com",
+        "password": "abc123",
+        "passwordConfirm": "abc123"
+    },
+    {
+        "role": "user",
+        "name": "Sergio",
+        "email": "example2@example.com",
+        "password": "abc123",
+        "passwordConfirm": "abc123"
+    },
+    {
+        "role": "user",
+        "name": "Oleg",
+        "email": "example4@example.com",
+        "password": "abc123",
+        "passwordConfirm": "abc123"
+    }
+]
